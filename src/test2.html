@@ -31,7 +31,7 @@
                 + "beta:  " + String(beta) + "<br>"  // y軸の値
                 + "gamma: " + String(gamma) + "<br>" // z軸の値
                 + "latitude: " + String(longitude) + "<br>" 
-                + "longitude: " + String(latitude) + "<br>";
+                + "longitude: " + String(latitude) + "<br>"
                 + "counter: " + String(checkcounter) + "<br>";
         }
 
@@ -40,7 +40,7 @@
             var centerX = canvas.width / 2;            // canvasの中心のX座標
             var centerY = canvas.height / 2;	        // canvasの中心のY座標
             var radius = 100;                          // 枠円の半径および針の長さ
-            var radianAlpha = alpha * Math.PI / 180;    // 角度をラジアンに変換
+            var radianAlpha = (360-alpha) * Math.PI / 180;    // 角度をラジアンに変換
             context.clearRect(0, 0, canvas.width, canvas.height);   // canvasの内容を消す clearRect(x, y, w, h)
 
             context.beginPath();                        // 描画開始
