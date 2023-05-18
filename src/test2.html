@@ -57,6 +57,15 @@
             context.stroke();                           // 線を描画
         }
 
+        navigator.geolocation.watchPosition(
+            function(e){
+                latitude = event.coords.latitude;
+                longitude = event.coords.longitude;
+            },
+            null,
+            position_options
+        );//GPS
+
         const requestDeviceOrientationPermission = () => {
 
             if( isRunning==true ){
@@ -66,7 +75,7 @@
                 return;
             }
 
-            navigator.geolocation.watchPosition(gpsmonitor, null, position_options);//GPS
+//            navigator.geolocation.watchPosition(gpsmonitor, null, position_options);//GPS
 
             DeviceOrientationEvent.requestPermission()
             .then(permissionState => {
@@ -89,10 +98,10 @@
             })
         }
 
-        function gpsmonitor(event) {
-            latitude = event.coords.latitude;
-            longitude = event.coords.longitude;
-        }
+//        function gpsmonitor(event) {
+//            latitude = event.coords.latitude;
+//            longitude = event.coords.longitude;
+//        }
 
         // ボタンクリックでrequestDeviceOrientationPermission実行
         const startButton = document.getElementById("start-button");
