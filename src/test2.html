@@ -40,7 +40,7 @@
             var centerX = canvas.width / 2;            // canvasの中心のX座標
             var centerY = canvas.height / 2;	        // canvasの中心のY座標
             var radius = 100;                          // 枠円の半径および針の長さ
-            var radianAlpha = (360-alpha) * Math.PI / 180;    // 角度をラジアンに変換
+            var radianAlpha = (360-alpha) * Math.PI / 180;    // 常に北向きかつ角度をラジアンに変換
             context.clearRect(0, 0, canvas.width, canvas.height);   // canvasの内容を消す clearRect(x, y, w, h)
 
             context.beginPath();                        // 描画開始
@@ -59,13 +59,12 @@
             context.stroke();                           // 線を描画
         }
 
-        navigator.geolocation.watchPosition(
-            function(e){
+        navigator.geolocation.watchPosition((e) => {
                 latitude = e.coords.latitude;
                 longitude = e.coords.longitude;
                 checkcounter++;
             },
-            null,
+            (error)=>{},
             position_options
         );//GPS
 
