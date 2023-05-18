@@ -19,14 +19,18 @@
                 alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
                 beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
                 gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
+
+                displayData();      // displayData 関数を実行
+                drawOrientation();  // 方向を描く
             },true);
         }
+/*        
         // 指定時間ごとに繰り返し実行される setInterval(実行する内容, 間隔[ms]) タイマーを設定
         var timer = window.setInterval(() => {
             displayData();      // displayData 関数を実行
             drawOrientation();  // 方向を描く
         }, 33); // 33msごとに（1秒間に約30回）
-
+*/
         // データを表示する displayData 関数
         function displayData() {
             var txt = document.getElementById("txt");   // データを表示するdiv要素の取得
