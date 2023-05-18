@@ -14,12 +14,13 @@
         var context = canvas.getContext("2d");          // ★絵を描く部品を取得
 
         // ジャイロセンサの値が変化したら実行される deviceorientation イベント
-        window.addEventListener("deviceorientation", (dat) => {
-            alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
-            beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
-            gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
-        });
-
+        if( window.DeviceOrientationEvent){
+            window.addEventListener("deviceorientation", (dat) => {
+                alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
+                beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
+                gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
+            },true);
+        }
         // 指定時間ごとに繰り返し実行される setInterval(実行する内容, 間隔[ms]) タイマーを設定
         var timer = window.setInterval(() => {
             displayData();      // displayData 関数を実行
@@ -29,9 +30,9 @@
         // データを表示する displayData 関数
         function displayData() {
             var txt = document.getElementById("txt");   // データを表示するdiv要素の取得
-            txt.innerHTML = "alpha: " + alpha + "<br>"  // x軸の値
-                + "beta:  " + beta + "<br>"  // y軸の値
-                + "gamma: " + gamma;          // z軸の値
+            txt.innerHTML = "alpha: " + String(alpha) + "<br>"  // x軸の値
+                + "beta:  " + String(beta) + "<br>"  // y軸の値
+                + "gamma: " + String(gamma);          // z軸の値
         }
 
         // コンパスのような絵を描く drawOrientation 関数
