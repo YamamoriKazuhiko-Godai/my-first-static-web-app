@@ -13,6 +13,7 @@
         var isRunning = false;
         var alpha = 0, beta = 0, gamma = 0;             // ジャイロの値を入れる変数を3個用意
         var longitude = 0, latitude=0;                  //GPS
+        var checkcounter = 0;
 
         var position_options = {
             enableHighAccuracy: true,// 高精度を要求する
@@ -30,7 +31,8 @@
                 + "beta:  " + String(beta) + "<br>"  // y軸の値
                 + "gamma: " + String(gamma) + "<br>" // z軸の値
                 + "latitude: " + String(longitude) + "<br>" 
-                + "longitude: " + String(latitude) + "<br>" ;          
+                + "longitude: " + String(latitude) + "<br>";
+                + "counter: " + String(checkcounter) + "<br>";
         }
 
         // コンパスのような絵を描く drawOrientation 関数
@@ -61,6 +63,7 @@
             function(e){
                 latitude = e.coords.latitude;
                 longitude = e.coords.longitude;
+                checkcounter++;
             },
             null,
             position_options
@@ -87,7 +90,8 @@
                     // 許可を得られた場合、deviceorientationをイベントリスナーに追加
                     window.addEventListener('deviceorientation', dat => {
                     // deviceorientationのイベント処理
-                        alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
+                        //alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
+                        alpha = dat.webkitCompassHeading;
                         beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
                         gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
 
