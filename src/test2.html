@@ -15,9 +15,9 @@
         var longitude = 0, latitude=0;                  //GPS
 
         var position_options = {
-                enableHighAccuracy: true,// 高精度を要求する
-                timeout: 60000,// 最大待ち時間（ミリ秒）
-                maximumAge: 0// キャッシュ有効期間（ミリ秒）
+            enableHighAccuracy: true,// 高精度を要求する
+            timeout: 60000,// 最大待ち時間（ミリ秒）
+            maximumAge: 0// キャッシュ有効期間（ミリ秒）
         };
 
         var canvas = document.getElementById("canvas"); // ★canvas要素を取得
@@ -59,8 +59,8 @@
 
         navigator.geolocation.watchPosition(
             function(e){
-                latitude = event.coords.latitude;
-                longitude = event.coords.longitude;
+                latitude = e.coords.latitude;
+                longitude = e.coords.longitude;
             },
             null,
             position_options
