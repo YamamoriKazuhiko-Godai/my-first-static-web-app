@@ -7,12 +7,13 @@
 <body>
     <div id="txt">ここにデータを表示</div>             <!-- データを表示するdiv要素 -->
     <canvas id="canvas" width="300" height="400"></canvas>  <!-- ★絵を描くcanvas要素 -->
+    <button id="start-button">start</button>
 
     <script>
         var alpha = 0, beta = 0, gamma = 0;             // ジャイロの値を入れる変数を3個用意
         var canvas = document.getElementById("canvas"); // ★canvas要素を取得
         var context = canvas.getContext("2d");          // ★絵を描く部品を取得
-
+/*
         // ジャイロセンサの値が変化したら実行される deviceorientation イベント
         if( window.DeviceOrientationEvent){
             window.addEventListener("deviceorientation", (dat) => {
@@ -24,6 +25,7 @@
                 drawOrientation();  // 方向を描く
             },true);
         }
+*/
 /*        
         // 指定時間ごとに繰り返し実行される setInterval(実行する内容, 間隔[ms]) タイマーを設定
         var timer = window.setInterval(() => {
@@ -60,6 +62,32 @@
             context.lineWidth = 5;                      // 線の太さ
             context.stroke();                           // 線を描画
         }
+
+        const requestDeviceOrientationPermission = () => {
+            const elem = document.getElementById("txt");
+            elem.innerText = "start access to the sensor";
+
+            DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === 'granted') {
+                    // 許可を得られた場合、deviceorientationをイベントリスナーに追加
+                    window.addEventListener('deviceorientation', dat => {
+                    // deviceorientationのイベント処理
+                        alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
+                        beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
+                        gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
+
+                        displayData();      // displayData 関数を実行
+                        drawOrientation();  // 方向を描く
+                    })
+                }
+            })
+        }
+
+        // ボタンクリックでrequestDeviceOrientationPermission実行
+        const startButton = document.getElementById("start-button");
+        startButton.addEventListener('click', requestDeviceOrientationPermission, false);
+        drawOrientation();
     </script>
 </body>
 </html>
