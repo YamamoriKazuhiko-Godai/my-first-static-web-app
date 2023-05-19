@@ -14,8 +14,8 @@
     <script>
         var isRunning = false;
         var alpha = -10, beta = 0, gamma = 0;             // ジャイロの値を入れる変数を3個用意
-        var longitude = 0, latitude=0;                  //現在地
-        var targetLon = 0, targetLat=0;                 //目標地点
+        var longitude = 136.606673, latitude=36.612411;   //現在地
+        var targetLon = 136.608204, targetLat=36.613189;  //目標地点
         var distance=0, direction=RAD(-20);
         var position_options = {
             enableHighAccuracy: true,// 高精度を要求する
@@ -36,24 +36,27 @@
         function CalcTarget(){
             var Px = RAD(longitude);
             var Py = RAD(latitude);
-            var Qx = RAD(targetlon);
-            var Qy = RAD(targetlat);
-            var rad = Math.atan2(
-                Math.cos(Py)*Math.sin(Qy) - Math.sin(Py)*Math.cos(Qy)*Math.cos(Qx-Px) ,
-                Math.cos(Qy)*Math.sin(Qx-Px)
-            );
+            var Qx = RAD(targetLon);
+            var Qy = RAD(targetLat);
+
+            //北を0として時計回り+方向角度
+            var dy = Math.cos(Qy)*Math.sin(Qx-Px);
+            var dx = Math.cos(Py)*Math.sin(Qy) - Math.sin(Py)*Math.cos(Qy)*Math.cos(Qx-Px);
+            direction = Math.atan2(dy,dx);
+
             var Rx = 6378137.0;
-            var Rx = 6356752.314;
-            var P = RAD(Py+Qy) /2.0;
-            var E = Math.Sqrt((Rx*Rx-Ry*Ry)/(Rx*Rx));
-            var W = Math.Sqrt(1-E*E*Math.sin(P)*Math.sin(P));
+            var Ry = 6356752.314;
+            var P = (Py+Qy)*0.5;
+            var E = Math.sqrt((Rx*Rx-Ry*Ry)/(Rx*Rx));
+            var W = Math.sqrt(1-E*E*Math.sin(P)*Math.sin(P));
             var M = Rx*(1-E*E) / Math.pow(W,3);
             var N = Rx/W;
-            var Dx = RAD(Qx-Px);
-            var Dy = RAD(Qy-Py);
-            var distance = Math.sqrt( Math.pow(Dy*M,2) + Math.pow(Dx*N*Math.cos(P),2));
+            var Dx = Qx-Px;
+            var Dy = Qy-Py;
+            //メートル距離
+            distance = Math.sqrt( Math.pow(Dy*M,2) + Math.pow(Dx*N*Math.cos(P),2));
 
-            return [distance, rad];
+            return [distance, direction];
         }
 
         // データを表示する displayData 関数
@@ -136,13 +139,9 @@
                         alpha = dat.webkitCompassHeading;
                         beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
                         gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
-/*
-                        var arr = CalcTarget();
-                        distance = arr[0];
-                        direction = arr[1];
-*/
-distance=1234.567;
-direction=0.123;
+
+                        CalcTarget();
+
                         displayData();      // displayData 関数を実行
                         drawOrientation();  // 方向を描く
                     })
@@ -153,6 +152,7 @@ direction=0.123;
         // ボタンクリックでrequestDeviceOrientationPermission実行
         const startButton = document.getElementById("start-button");
         startButton.addEventListener('click', requestDeviceOrientationPermission, false);
+        CalcTarget();
         drawOrientation();
         displayData();
     </script>
