@@ -1,17 +1,4 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>ジャイロを見える化</title>
-</head>
-<body>
-    <label for="lat">Latitude---</label><input type="number" id="lat" value="36.613189"><br/>
-    <label for="lon">Longitude-</label><input type="number" id="lon" value="136.608204">
-    <div id="txt">ここにデータを表示</div>             <!-- データを表示するdiv要素 -->
-    <canvas id="canvas" width="300" height="400"></canvas>  <!-- ★絵を描くcanvas要素 -->
-    <button id="start-button">start</button>
-
-    <script>
+﻿
         var isRunning = false;
         var alpha = -10, beta = 0, gamma = 0;             // ジャイロの値を入れる変数を3個用意
         var longitude = 136.606673, latitude=36.612411;   //現在地
@@ -89,18 +76,16 @@
 
             // 十字方位線
             context.beginPath();                        // 描画開始
+            context.strokeStyle = "rgb(0, 0, 0)";     // 針の線の色
+            context.lineWidth = 1;                      // 線の太さ
             context.moveTo(centerX - Math.cos(radianAlphaRev - Math.PI / 2) * radius,
                 centerY - Math.sin(radianAlphaRev - Math.PI / 2) * radius);
             context.lineTo(centerX + Math.cos(radianAlphaRev - Math.PI / 2) * radius,
                 centerY + Math.sin(radianAlphaRev - Math.PI / 2) * radius);
-            context.strokeStyle = "rgb(0, 0, 0)";     // 針の線の色
-
             context.moveTo(centerX - Math.cos(radianAlphaRev) * radius,
                 centerY - Math.sin(radianAlphaRev) * radius);
             context.lineTo(centerX + Math.cos(radianAlphaRev) * radius,
                 centerY + Math.sin(radianAlphaRev) * radius);
-            context.strokeStyle = "rgb(0, 0, 0)";     // 針の線の色
-            context.lineWidth = 1;                      // 線の太さ
             context.stroke();                           // 線を描画
             
             // 目標への方向線（太赤）
@@ -112,6 +97,7 @@
             context.lineWidth = 5;                      // 線の太さ
             context.stroke();                           // 線を描画
 
+            //東西南北　文字
             context.beginPath();  
             context.font = '11pt Arial';
             context.fillStyle = 'rgba(0, 0, 0)';
@@ -127,6 +113,7 @@
                 centerY + Math.sin(radianAlphaRev+Math.PI / 2) * (radius+15));
             context.stroke();
 
+            //目標までの距離
             context.beginPath();  
             context.font = '11pt Arial';
             context.fillStyle = 'rgba(255, 0, 0)';
@@ -135,7 +122,6 @@
             context.fillText(distance.toFixed(1)+'m', centerX + Math.cos(direction - radianAlpha- Math.PI / 2) * (radius+35),
                 centerY + Math.sin(direction - radianAlpha- Math.PI / 2) * (radius+35));
             context.stroke();
-
         }
 
         //GPS位置測位
@@ -167,14 +153,13 @@
 
                     // 許可を得られた場合、deviceorientationをイベントリスナーに追加
                     window.addEventListener('deviceorientation', dat => {
-                    // deviceorientationのイベント処理
+                        // deviceorientationのイベント処理
                         //alpha = dat.alpha;  // z軸（表裏）まわりの回転の角度（反時計回りがプラス）
-                        alpha = dat.webkitCompassHeading;
+                        alpha = dat.webkitCompassHeading;//北の方向角
                         beta = dat.beta;   // x軸（左右）まわりの回転の角度（引き起こすとプラス）
                         gamma = dat.gamma;  // y軸（上下）まわりの回転の角度（右に傾けるとプラス）
 
                         CalcTarget();
-
                         displayData();      // displayData 関数を実行
                         drawOrientation();  // 方向を描く
                     })
@@ -188,6 +173,3 @@
         CalcTarget();
         drawOrientation();
         displayData();
-    </script>
-</body>
-</html>
