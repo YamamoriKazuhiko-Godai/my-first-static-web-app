@@ -217,6 +217,8 @@
                     elem.innerText = "start access to the sensor";
                     isRunning = true;
 
+                    connect();//RTK通信も開始する
+
                     // 許可を得られた場合、deviceorientationをイベントリスナーに追加
                     window.addEventListener('deviceorientation', dat => {
                         // deviceorientationのイベント処理
@@ -229,14 +231,16 @@
                         displayData();      // displayData 関数を実行
                         drawOrientation();  // 方向を描く
                     })
+                }else{
+                    disconnect();
                 }
             })
         }
 
         // ボタンクリックでrequestDeviceOrientationPermission実行
         const startButton = document.getElementById("start-button");
-////        startButton.addEventListener('click', requestDeviceOrientationPermission, false);
-        startButton.addEventListener('click', connect, false);
+        startButton.addEventListener('click', requestDeviceOrientationPermission, false);
+//        startButton.addEventListener('click', connect, false);
 
         const pauseButton = document.getElementById("pause-button");
         pauseButton.addEventListener('click', disconnect, false);
