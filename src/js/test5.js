@@ -9,9 +9,21 @@
             timeout: 60000,// 最大待ち時間（ミリ秒）
             maximumAge: 0// キャッシュ有効期間（ミリ秒）
         };
+        var _intervalmsec = 2000;
+        var track_stat = 'ready';
+
+        var xmlhttp = new XMLHttpRequest();
+        var baseurl = 'https://ichimillgodaiproxyapp.azurewebsites.net/track/';
+//        var baseurl = 'http://localhost:3000/track/';
+
+        const id = '2207-apiUser';
+        const key = '87e3f1974d64fdff71c80a7da17a0201';
+        const device = 'lc10629';
 
         var canvas = document.getElementById("canvas"); // ★canvas要素を取得
         var context = canvas.getContext("2d");          // ★絵を描く部品を取得
+
+        var _timerid=0;
 
         function RAD(deg){
             return deg/180.0 * Math.PI;
@@ -57,6 +69,7 @@
                 + "longitude: " + String(longitude) + "<br>"
                 + "distance: " + distance.toFixed(1) + "<br>"//現在地から目標地点までの距離
 //                + "direction" + String(DEG(direction)) + "<br>";//現在地から目標地点までの方位
+                + "track status:" + track_stat + "<br>";//測位状態
         }
 
         // コンパスのような絵を描く drawOrientation 関数
@@ -124,6 +137,7 @@
             context.stroke();
         }
 
+        /*
         //GPS位置測位
         navigator.geolocation.watchPosition((e) => {
                 latitude = e.coords.latitude;
@@ -132,6 +146,58 @@
             (error)=>{},
             position_options
         );
+        */
+
+        function connect() {
+            var url = baseurl + 'connect?id=' + id + '&key=' + key + '&device=' + device;
+            xmlhttp.open("GET", url);
+            xmlhttp.send();
+  
+//         _timerid = setInterval(onTimer, _intervalmsec);
+        };
+        function disconnect() {
+            clearInterval(_timerid);
+            _timerid = 0;
+
+            var url = baseurl + 'disconnect?device=' + device;
+            xmlhttp.open("GET", url);
+            xmlhttp.send();
+        };
+        //Timerトリガー  
+        function onTimer() {
+              var url = baseurl + 'position?device=' + device;
+              xmlhttp.open("GET", url);
+              xmlhttp.send();
+        };
+        xmlhttp.onreadystatechange = () => {
+
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var res = xmlhttp.responseText;
+//                console.log(xmlhttp.responseText);
+          
+                var json = JSON.parse(res);
+                var restype = json['RESTYPE'];
+          
+                if( restype == 'CONNECT'){
+                    _timerid = setInterval(onTimer, _intervalmsec);
+
+                } else if(restype == 'DISCONNECT'){
+                    track_stat = 'pause';
+                    displayData();
+//                    alert( 'トラッキングを停止しました' );
+
+                } else if(restype == 'TRACK'){
+                    if( json['LATITUDE'] !== undefined){
+                        latitude = json['LATITUDE'];
+                        longitude = json['LONGITUDE'];
+                        track_stat = json['POSITION_TYPE_NAME'];
+                        CalcTarget();
+                        drawOrientation();
+                        displayData();
+                    }
+                }
+            }
+        }
 
         //方位センサー
         const requestDeviceOrientationPermission = () => {
@@ -169,7 +235,12 @@
 
         // ボタンクリックでrequestDeviceOrientationPermission実行
         const startButton = document.getElementById("start-button");
-        startButton.addEventListener('click', requestDeviceOrientationPermission, false);
+////        startButton.addEventListener('click', requestDeviceOrientationPermission, false);
+        startButton.addEventListener('click', connect, false);
+
+        const pauseButton = document.getElementById("pause-button");
+        pauseButton.addEventListener('click', disconnect, false);
+
         CalcTarget();
         drawOrientation();
         displayData();

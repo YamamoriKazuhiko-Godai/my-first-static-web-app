@@ -7,8 +7,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open test3.html",
-            "file": "c:\\Users\\yamamori\\source\\test\\iphone_test\\my-first-static-web-app\\src\\test3.html"
+            "name": "Open test5.html",
+            "file": "c:\\Users\\yamamori\\source\\test\\iphone_test\\my-first-static-web-app\\src\\test5.html"
         }
     ]
 }
